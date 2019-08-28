@@ -10,11 +10,36 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var label: UILabel!
-    var button: UIButton!
+    var customView: CustomView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        customView = CustomView()
+        view.addSubview(customView)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // customViewのframeが変更されると、customViewのlayoutSubviewsが呼ばれ
+        // customViewのlabelのframeも更新される
+        customView.frame = CGRect(x: view.frame.origin.x + 50, y: view.safeAreaInsets.top + 50, width: view.frame.width - 50 * 2, height: 200)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+}
+
+// CustomViewの定義
+// UIViewを継承し、labelを保持している
+class CustomView: UIView {
+    var label: UILabel!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         // ラベルを生成する
         label = UILabel()
@@ -27,32 +52,20 @@ class ViewController: UIViewController {
         // ラベルの背景色を変える
         label.backgroundColor = UIColor.red
         // ラベルをViewControllerのviewの上に乗せる
-        view.addSubview(label)
-
-        // ボタンを生成
-        button = UIButton()
-        // ボタンの背景色を変える
-        button.backgroundColor = UIColor.black
-        // ボタンをViewControllerのviewの上に乗せる
-        view.addSubview(button)
-        
+        addSubview(label)
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init with coder is not implemented")
+    }
+    
+    // layoutを変更すべき時に呼ばれるメソッド
+    // labelの座標をCustomViewの座標を起点にレイアウトしている
+    // この時frameではなくbounsを使う
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
-        // このメソッド内でsafeAreaInsetsを元にレイアウトを組む
-        // ラベルのレイアウトを決める
-        label.frame = CGRect(x: view.frame.origin.x + 50, y: 50, width: view.frame.width - 50 * 2, height: 100)
-        // ボタンのレイアウトを決める
-        button.frame = CGRect(x: label.frame.maxX + 10, y: label.frame.maxY + 30, width: 30, height: 100)
+        label.frame = CGRect(x: bounds.origin.x + 50, y: bounds.origin.y, width: frame.width - 50 * 2, height: 100)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
 }
 
