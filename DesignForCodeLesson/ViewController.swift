@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         
         // customViewのframeが変更されると、customViewのlayoutSubviewsが呼ばれ
         // customViewのlabelのframeも更新される
-        customView.frame = CGRect(x: view.frame.origin.x + 50, y: view.safeAreaInsets.top + 50, width: view.frame.width - 50 * 2, height: 200)
+        customView.frame = CGRect(x: view.frame.origin.x + 50, y: view.safeAreaInsets.top + 50, width: view.frame.width - 50 * 2, height: 100)
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,7 +36,9 @@ class ViewController: UIViewController {
 // CustomViewの定義
 // UIViewを継承し、labelを保持している
 class CustomView: UIView {
+    
     var label: UILabel!
+    var button: UIButton!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +46,7 @@ class CustomView: UIView {
         // ラベルを生成する
         label = UILabel()
         // ラベルのテキストを指定する
-        label.text = "Hello!"
+        label.text = "Label"
         // ラベルのテキストを中央寄せにする
         label.textAlignment = NSTextAlignment.center
         // ラベルのテキストカラーを変える
@@ -53,6 +55,24 @@ class CustomView: UIView {
         label.backgroundColor = UIColor.red
         // ラベルをViewControllerのviewの上に乗せる
         addSubview(label)
+        
+        button = UIButton()
+        // ボタンのタイトルを設定する
+        button.setTitle("Button", for: .normal)
+        // タイトルのテキストカラーを変える
+        button.setTitleColor(UIColor.white, for: .normal)
+        // ボタンの背景色を変える
+        button.backgroundColor = UIColor.black
+        // ボタンがタップされた時に実行するメソッドを指定
+        button.addTarget(self, action: #selector(buttonEvent(_:)), for: UIControlEvents.touchUpInside)
+        // ボタンをViewControllerのviewの上に乗せる
+        addSubview(button)
+        
+    }
+    
+    // ボタンがタップされた時に呼ばれるメソッド
+    @objc func buttonEvent(_ sender: UIButton) {
+        print("ボタンの情報: \(sender)")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -65,7 +85,10 @@ class CustomView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        label.frame = CGRect(x: bounds.origin.x + 50, y: bounds.origin.y, width: frame.width - 50 * 2, height: 100)
+        // ラベルのレイアウト
+        label.frame = CGRect(x: bounds.origin.x + 50, y: bounds.origin.y, width: frame.width - 50 * 2, height: frame.height / 2)
+        // ボタンのレイアウト
+        button.frame = CGRect(x: bounds.origin.x + 50, y: bounds.origin.y + 50, width: frame.width - 50 * 2, height: frame.height / 2)
     }
 }
 
